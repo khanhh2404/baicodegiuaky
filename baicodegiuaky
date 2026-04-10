@@ -1,0 +1,131 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: FormScreen(),
+    );
+  }
+}
+
+class FormScreen extends StatefulWidget {
+  const FormScreen({super.key});
+
+  @override
+  State<FormScreen> createState() => _FormScreenState();
+}
+
+class _FormScreenState extends State<FormScreen> {
+  final titleCtrl = TextEditingController();
+  final dateCtrl = TextEditingController();
+  final locationCtrl = TextEditingController();
+
+  bool isReminder = true;
+  String method = "Nhắc bằng chuông";
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Thêm công việc"),
+        backgroundColor: Colors.blueGrey,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            buildRow("Tên công việc", TextField(controller: titleCtrl)),
+
+            const SizedBox(height: 10),
+
+            // Thời gian + icon
+            Row(
+              children: [
+                const SizedBox(width: 120, child: Text("Thời gian")),
+                Expanded(
+                  child: TextField(
+                    controller: dateCtrl,
+                    decoration: const InputDecoration(
+                      hintText: "dd/mm",
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Icon(Icons.calendar_month),
+              ],
+            ),
+
+            const SizedBox(height: 10),
+
+            buildRow("Địa điểm", TextField(controller: locationCtrl)),
+
+            const SizedBox(height: 10),
+
+            // Switch
+            Row(
+              children: [
+                const Expanded(child: Text("Nhắc việc trước 1 ngày")),
+                Switch(
+                  value: isReminder,
+                  onChanged: (v) => setState(() => isReminder = v),
+                ),
+              ],
+            ),
+
+            // Dropdown
+            Align(
+              alignment: Alignment.centerRight,
+              child: DropdownButton<String>(
+                value: method,
+                items: const [
+                  "Nhắc bằng chuông",
+                  "Nhắc bằng email",
+                  "Nhắc bằng thông báo",
+                ]
+                    .map((e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ))
+                    .toList(),
+                onChanged: (v) => setState(() => method = v!),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                print("Tên: ${titleCtrl.text}");
+},
+              child: const Text("Ghi lại công việc"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Row chuẩn label + input
+  Widget buildRow(String label, Widget field) {
+    return Row(
+      children: [
+        SizedBox(width: 120, child: Text(label)),
+        Expanded(
+          child: SizedBox(
+            height: 45,
+            child: field,
+          ),
+        ),
+      ],
+    );
+  }
+}
